@@ -11,6 +11,9 @@ repos_raw = r1.read().decode("utf-8")
 conn.close()
 
 repos = json.loads(repos_raw)
+
+# We create a counter that will enumerate the drugs
+# We check for every element in the file the id, and we print it
 position = 1
 for elem in repos["results"]:
         print("The id of the drug", position , "is", elem["id"])
