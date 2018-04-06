@@ -1,6 +1,6 @@
 import http.client
 import json
-#kkk
+
 headers = {'User-Agent': 'http-client'}
 
 conn = http.client.HTTPSConnection("api.fda.gov")
@@ -11,5 +11,7 @@ repos_raw = r1.read().decode("utf-8")
 conn.close()
 
 repos = json.loads(repos_raw)
-for elem in repos["results"]:
-        print(elem["id"])
+
+print ("The id of the drug is ", repos["results"][0]["id"])
+print ("The purpose of the drug is", repos["results"][0]["purpose"])
+print ("The manufacturer name of the drug is", repos["results"][0]["openfda"]["manufacturer_name"])
