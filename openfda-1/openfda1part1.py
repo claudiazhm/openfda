@@ -12,6 +12,7 @@ conn.close()
 
 repos = json.loads(repos_raw)
 
+# We print what are we looking for and we look it up in the http list, searching inside the lists:
 print ("The id of the drug is ", repos["results"][0]["id"])
 print ("The purpose of the drug is", repos["results"][0]["purpose"])
 print ("The manufacturer name of the drug is", repos["results"][0]["openfda"]["manufacturer_name"])
