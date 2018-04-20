@@ -17,6 +17,6 @@ conn.close()
 
 repos = json.loads(repos_raw)
 
-# We print the names of the manufacturers repositories, and we look the name inside the lists:
+# We print the names of the manufacturers repositories, and we look for the name inside the lists:
 print("The manufacturer repository which produce aspirin is", repos["results"][2]["openfda"]["manufacturer_name"])
 print("The manufacturer repository which produce aspirin is", repos["results"][0]["openfda"]["manufacturer_name"])
