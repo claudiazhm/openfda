@@ -5,7 +5,7 @@ import json
 
 # -- IP and the port of the server
 IP = "localhost"  # Localhost means "I": your local machine
-PORT = 9008
+PORT = 8000
 
 # HTTPRequestHandler class
 class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):

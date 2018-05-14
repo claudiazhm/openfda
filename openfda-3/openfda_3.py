@@ -3,7 +3,7 @@ import http.client
 import json
 
 IP = "127.0.0.1"
-PORT = 9006
+PORT = 8000
 MAX_OPEN_REQUESTS = 5
 
 def process_client(clientsocket):
