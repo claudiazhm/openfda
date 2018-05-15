@@ -37,7 +37,7 @@ class OpenFDAClient():
             items = []
         return items
 
-    def search_drugs(self, active_ingredient, limit=10):
+    def searchDrug(self, active_ingredient, limit=10):
         # We request the drugs so the client looks up for it
         query = 'search=active_ingredient:"%s"' % active_ingredient
         if limit:
@@ -45,12 +45,12 @@ class OpenFDAClient():
         drugs = self.send_query(query)
         return drugs
 
-    def list_drugs(self, limit=10):
+    def listDrug(self, limit=10):
         query = "limit=" + str(limit)
         drugs = self.send_query(query)
         return drugs
 
-    def search_companies(self, company_name, limit=10):
+    def searchCompany(self, company_name, limit=10):
         # We request the company name so the client looks up for it
         query = 'search=openfda.manufacturer_name:"%s"' % company_name
         if limit:
@@ -137,13 +137,13 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                     active_ingredient = param_value
                 elif param_name == 'limit':
                     limit = param_value
-            items = client.search_drugs(active_ingredient, limit)
+            items = client.searchDrug(active_ingredient, limit)
             http_response = html_vis.build_html_list(parser.parse_drugs(items))
         elif 'listDrugs' in self.path:
             limit = None
             if len(self.path.split("?")) > 1:
                 limit = self.path.split("?")[1].split("=")[1]
-            items = client.list_drugs(limit)
+            items = client.listDrug(limit)
             http_response = html_vis.build_html_list(parser.parse_drugs(items))
         elif 'searchCompany' in self.path:
             company_name = None
@@ -156,19 +156,19 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                     company_name = param_value
                 elif param_name == 'limit':
                     limit = param_value
-            items = client.search_companies(company_name, limit)
+            items = client.searchCompany(company_name, limit)
             http_response = html_vis.build_html_list(parser.parse_companies(items))
         elif 'listCompanies' in self.path:
             limit = None
             if len(self.path.split("?")) > 1:
                 limit = self.path.split("?")[1].split("=")[1]
-            items = client.list_drugs(limit)
+            items = client.listDrug(limit)
             http_response = html_vis.build_html_list(parser.parse_companies(items))
         elif 'listWarnings' in self.path:
             limit = None
             if len(self.path.split("?")) > 1:
                 limit = self.path.split("?")[1].split("=")[1]
-            items = client.list_drugs(limit)
+            items = client.listDrug(limit)
             http_response = html_vis.build_html_list(parser.parse_warnings(items))
         else:
             http_response_code = 404
