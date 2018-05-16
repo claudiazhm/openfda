@@ -12,7 +12,6 @@ PORT = 8000
 OPENFDA_BASIC = False
 
 # We are going to use classes. The class is a fundamental building block used in Python, works as a library of objects.
-
 class OpenFDAClient():
 
     def send_query(self, query):
@@ -115,6 +114,9 @@ class parser_openfda():
 class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
     def do_GET(self):
+
+        path = self.path
+
         client = OpenFDAClient()
         html_vis = html_openfda()
         parser = parser_openfda()
@@ -122,15 +124,15 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         http_response_code = 200
         http_response = "<h1>Not supported</h1>"
 
-        if self.path == "/":
+        if path == "/":
             # Return the HTML form for searching
             with open("html_openfda.html") as file_form:
                 form = file_form.read()
                 http_response = form
-        elif 'searchDrug' in self.path:
+        elif 'searchDrug' in path:
             active_ingredient = None
             limit = 10
-            params = self.path.split("?")[1].split("&")
+            params = path.split("?")[1].split("&")
             for param in params:
                 param_name = param.split("=")[0]
                 param_value = param.split("=")[1]
@@ -140,16 +142,16 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                     limit = param_value
             items = client.searchDrug(active_ingredient, limit)
             http_response = html_vis.build_html_list(parser.parse_drugs(items))
-        elif 'listDrugs' in self.path:
+        elif 'listDrugs' in path:
             limit = None
-            if len(self.path.split("?")) > 1:
-                limit = self.path.split("?")[1].split("=")[1]
+            if len(path.split("?")) > 1:
+                limit = path.split("?")[1].split("=")[1]
             items = client.listDrug(limit)
             http_response = html_vis.build_html_list(parser.parse_drugs(items))
-        elif 'searchCompany' in self.path:
+        elif 'searchCompany' in path:
             company_name = None
             limit = 10
-            params = self.path.split("?")[1].split("&")
+            params = path.split("?")[1].split("&")
             for param in params:
                 param_name = param.split("=")[0]
                 param_value = param.split("=")[1]
@@ -159,16 +161,16 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                     limit = param_value
             items = client.searchCompany(company_name, limit)
             http_response = html_vis.build_html_list(parser.parse_companies(items))
-        elif 'listCompanies' in self.path:
+        elif 'listCompanies' in path:
             limit = None
-            if len(self.path.split("?")) > 1:
-                limit = self.path.split("?")[1].split("=")[1]
+            if len(path.split("?")) > 1:
+                limit = path.split("?")[1].split("=")[1]
             items = client.listDrug(limit)
             http_response = html_vis.build_html_list(parser.parse_companies(items))
-        elif 'listWarnings' in self.path:
+        elif 'listWarnings' in path:
             limit = None
-            if len(self.path.split("?")) > 1:
-                limit = self.path.split("?")[1].split("=")[1]
+            if len(path.split("?")) > 1:
+                limit = path.split("?")[1].split("=")[1]
             items = client.listDrug(limit)
             http_response = html_vis.build_html_list(parser.parse_warnings(items))
         else:
