@@ -12,8 +12,10 @@ PORT = 8000
 OPENFDA_BASIC = False
 
 # We are going to use classes. The class is a fundamental building block used in Python, works as a library of objects.
-class OpenFDAClient():
 
+#The first class is OpenFDAClient, which will include the logic to communicate with the OpenFDA remote API.
+class OpenFDAClient():
+    # We define a function called send_query which will send what we are looking for to the openFDA:
     def send_query(self, query):
         # We request an information ("query") to the openfda API, it will return the result of the query in JSON format.
         headers = {'User-Agent': 'http-client'}
@@ -58,26 +60,10 @@ class OpenFDAClient():
         drugs = self.send_query(query)
         return drugs
 
-
-class html_openfda():
-
-    def build_html_list(self, items):
-        html_list = "<ul>"
-        for item in items:
-            html_list += "<li>" + item + "</li>"
-        html_list += "</ul>"
-        return html_list
-
-    # If not found, it should give back an error, and for that, we use a specific html file the not_found.html
-    def get_not_found_page(self):
-        with open("not_found.html") as html_file:
-            html = html_file.read()
-        return html
-
+# Second class: OpenFDAParser: includes the logic to extract the data from drugs items
 class parser_openfda():
 
     def parse_companies(self, drugs):
-
         # We create an empty list of the companies
         companies = []
         for drug in drugs:
@@ -111,6 +97,22 @@ class parser_openfda():
                 warnings.append("None")
         return warnings
 
+# Third class: OpenFDAHTML: includes the logic to the HTML visualization
+class OpenFDAHTML():
+
+    def build_html_list(self, items):
+        html_list = "<ul>"
+        for item in items:
+            html_list += "<li>" + item + "</li>"
+        html_list += "</ul>"
+        return html_list
+
+    # If anything isn't found, we should receive an error, so we use a specific html file: not_found.html
+    def get_not_found_page(self):
+        with open("not_found.html") as html_file:
+            html = html_file.read()
+        return html
+
 class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
     def do_GET(self):
@@ -118,7 +120,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         path = self.path
 
         client = OpenFDAClient()
-        html_vis = html_openfda()
+        visualization = OpenFDAHTML()
         parser = parser_openfda()
 
         http_response_code = 200
@@ -126,7 +128,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
         if path == "/":
             # Return the HTML form for searching
-            with open("html_openfda.html") as file_form:
+            with open("OpenFDAHTML.html") as file_form:
                 form = file_form.read()
                 http_response = form
         elif 'searchDrug' in path:
@@ -141,13 +143,13 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                 elif param_name == 'limit':
                     limit = param_value
             items = client.searchDrug(active_ingredient, limit)
-            http_response = html_vis.build_html_list(parser.parse_drugs(items))
+            http_response = visualization.build_html_list(parser.parse_drugs(items))
         elif 'listDrugs' in path:
             limit = None
             if len(path.split("?")) > 1:
                 limit = path.split("?")[1].split("=")[1]
             items = client.listDrug(limit)
-            http_response = html_vis.build_html_list(parser.parse_drugs(items))
+            http_response = visualization.build_html_list(parser.parse_drugs(items))
         elif 'searchCompany' in path:
             company_name = None
             limit = 10
@@ -160,24 +162,24 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                 elif param_name == 'limit':
                     limit = param_value
             items = client.searchCompany(company_name, limit)
-            http_response = html_vis.build_html_list(parser.parse_companies(items))
+            http_response = visualization.build_html_list(parser.parse_companies(items))
         elif 'listCompanies' in path:
             limit = None
             if len(path.split("?")) > 1:
                 limit = path.split("?")[1].split("=")[1]
             items = client.listDrug(limit)
-            http_response = html_vis.build_html_list(parser.parse_companies(items))
+            http_response = visualization.build_html_list(parser.parse_companies(items))
         elif 'listWarnings' in path:
             limit = None
             if len(path.split("?")) > 1:
                 limit = path.split("?")[1].split("=")[1]
             items = client.listDrug(limit)
-            http_response = html_vis.build_html_list(parser.parse_warnings(items))
+            http_response = visualization.build_html_list(parser.parse_warnings(items))
         else:
             http_response_code = 404
             if not OPENFDA_BASIC:
                 url_found = False
-                http_response = html_vis.get_not_found_page()
+                http_response = visualization.get_not_found_page()
 
         self.send_response(http_response_code)
 
