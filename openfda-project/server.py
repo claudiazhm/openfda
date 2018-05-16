@@ -6,6 +6,7 @@ import socketserver
 
 socketserver.TCPServer.allow_reuse_address = True
 
+IP = "localhost"
 PORT = 8000
 
 OPENFDA_BASIC = False
